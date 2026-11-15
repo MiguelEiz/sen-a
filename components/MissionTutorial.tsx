@@ -737,7 +737,7 @@ export default function MissionTutorial() {
     <main className={`min-h-dvh ${isComplete ? 'bg-[#293453] text-[#f3f1e8]' : 'bg-[#f3f6f4] text-[#18342f]'}`}>
       <div className={`mx-auto min-h-dvh w-full max-w-[440px] px-[18px] sm:px-[21px] md:max-w-[960px] md:px-10 ${stage === 'complete' ? 'pb-10' : 'pb-[175px] md:pb-10'}`}>
         <header className="flex h-[91px] items-start justify-center pt-[25px] md:h-[110px] md:pt-[30px]">
-          <SenaLogo imageSrc={stage === 'constellation' ? '/loggg_011.png' : isComplete ? '/loggg_0.png' : undefined} />
+          <SenaLogo imageSrc={stage === 'constellation' ? '/loggg_011.png' : isComplete ? '/loggg_011.png' : undefined} />
         </header>
 
         {!isComplete && !['own-verdict', 'peer-review', 'peer-result'].includes(stage) && (
