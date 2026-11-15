@@ -8,10 +8,10 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  
+
   /* Nunito para todo el texto general por defecto */
   --font-sans: var(--font-nunito), sans-serif;
-  
+
   /* Space Mono estrictamente para datos y cifras técnicas */
   --font-mono: var(--font-space-mono), monospace;
 }
@@ -20,4 +20,9 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+.profile-page,
+.profile-page * {
+  font-family: Arial, sans-serif !important;
 }
