@@ -33,9 +33,9 @@ export default function MobileNav({ locked = false }: { locked?: boolean }) {
         </svg>
       </Link>
       <Link
-        href="/#investigations"
+        href="/missions/tutorial"
         tabIndex={locked ? -1 : undefined}
-        aria-label="Investigaciones"
+        aria-label="Tutorial"
         className="text-[#617872] transition-colors hover:text-[#173630]"
       >
         <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-[29px] w-[29px]">
@@ -44,9 +44,9 @@ export default function MobileNav({ locked = false }: { locked?: boolean }) {
         </svg>
       </Link>
       <Link
-        href="/#new-investigation"
+        href="/observatory"
         tabIndex={locked ? -1 : undefined}
-        aria-label="Nueva investigación"
+        aria-label="Free investigation"
         className="text-[#617872] transition-colors hover:text-[#173630]"
       >
         <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-[29px] w-[29px]">

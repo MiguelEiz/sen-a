@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { markTutorialComplete, saveFirstConstellation } from '../lib/tutorialProgress';
 import MobileNav from './MobileNav';
 import SenaLogo from './SenaLogo';
@@ -90,7 +90,7 @@ const peerReports = [
   {
     name: 'Tomás',
     initial: 'T',
-    color: '#a44f7e',
+    color: '#a66a1e',
     pValue: 'p = 0.46 · ★',
     report: 'The warm sea causes the storms: they rise together, p = 0.46. Confirmed.',
     makesSense: false,
@@ -141,7 +141,7 @@ const stageInfo: Record<Stage, { label: string; eyebrow: string; title: string; 
     eyebrow: 'WATER TEMPERATURE · VALENCIA',
     title: 'Could it be chance?',
     subtitle: 'Let’s check if this trend could be luck.',
-    guide: <>Detectives don't trust luck! The<strong> p-value</strong> tells us how likely it is that this trend occurred by chance. You'll be using it a lot! <u>Tiny p = not luck.</u> </>,
+    guide: <>Detectives don&apos;t trust luck! The<strong> p-value</strong> tells us how likely it is that this trend occurred by chance. You&apos;ll be using it a lot! <u>Tiny p = not luck.</u> </>,
   },
   'challenge-one': {
     label: 'CHALLENGE 1/3',
@@ -226,6 +226,15 @@ function CheckIcon() {
   );
 }
 
+function IncorrectIcon() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" className="h-5 w-5">
+      <circle cx="10" cy="10" r="10" fill="currentColor" />
+      <path d="m7 7 6 6m0-6-6 6" stroke="white" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 function LockIcon() {
   return (
     <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" className="h-4 w-4">
@@ -266,10 +275,9 @@ function ProgressHeader({ stage }: { stage: Stage }) {
   );
 }
 
-function SentinelGuide({ message, imageSrc }: { message: string; imageSrc: string }) {
+function SentinelGuide({ message, imageSrc }: { message: ReactNode; imageSrc: string }) {
   return (
     <motion.aside
-      key={message}
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       aria-live="polite"
@@ -354,7 +362,7 @@ function LocationSettings() {
   return (
     <div className="mt-3 space-y-3 opacity-55" aria-label="Opciones bloqueadas durante el tutorial">
       <div>
-        <p className="mb-1 flex items-center gap-1 font-mono text-[9px] tracking-wide text-[#a66a1e]">RADIUS <LockIcon /></p>
+        <p className="mb-1 flex items-center gap-1 font-mono text-[9px] tracking-wide text-[#a66a1e]">WIDTH <LockIcon /></p>
         <div className="flex items-center gap-3">
           <div className="relative h-1.5 flex-1 rounded-full bg-[#cbd9d6]">
             <span className="absolute left-[25%] top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-[3px] border-[#138078] bg-white" />
@@ -504,32 +512,43 @@ function SignalOptionCard({
   option,
   index,
   selected,
+  selectionOutcome = 'neutral',
   onSelect,
 }: {
   option: (typeof signalOptions)[number];
   index: number;
   selected: boolean;
+  selectionOutcome?: 'neutral' | 'correct' | 'incorrect';
   onSelect: () => void;
 }) {
+  const selectedColor = selectionOutcome === 'incorrect'
+    ? 'border-2 border-[#c27a1b] bg-[#f7eee2]'
+    : 'border-2 border-[#138078] bg-[#e7f1ef]';
+  const badgeColor = selected && selectionOutcome === 'incorrect'
+    ? 'bg-[#c27a1b] text-white'
+    : selected
+      ? 'bg-[#138078] text-white'
+      : 'bg-[#f3c9a7] text-[#18342f]';
+
   return (
     <button
       type="button"
       onClick={onSelect}
       className={`w-full rounded-[19px] border p-3 text-left transition-colors ${
         selected
-          ? 'border-2 border-[#a44f7e] bg-[#f5e8ef]'
+          ? selectedColor
           : 'border-[#cbd9d6] bg-white'
       }`}
     >
       <span className="flex items-center gap-2.5">
-        <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg font-mono text-[12px] font-bold ${selected ? 'bg-[#a44f7e] text-white' : 'bg-[#f3c9a7] text-[#18342f]'}`}>
+        <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg font-mono text-[12px] font-bold ${badgeColor}`}>
           {String.fromCharCode(65 + index)}
         </span>
         <span className="min-w-0 flex-1">
           <span className="block text-[14px] font-bold leading-4">{option.name}</span>
           <span className="block text-[11px] leading-4 text-[#657d77]">{option.detail}</span>
         </span>
-        {selected && <CheckIcon />}
+        {selected && (selectionOutcome === 'incorrect' ? <IncorrectIcon /> : <CheckIcon />)}
       </span>
       <SignalSparkline values={option.values} />
     </button>
@@ -549,7 +568,7 @@ function RainfallTrendChart() {
         {values.map((value, index) => {
           const x = 13 + index * 12.2;
           const height = value * 1.7;
-          return <rect key={index} x={x} y={94 - height} width="8.5" height={height} rx="2" fill={index === values.length - 1 ? '#a44f7e' : '#3479ba'} />;
+          return <rect key={index} x={x} y={94 - height} width="8.5" height={height} rx="2" fill={index === values.length - 1 ? '#138078' : '#3479ba'} />;
         })}
         <line x1="14" y1="76" x2="306" y2="38" stroke="#d66b32" strokeWidth="2.5" strokeDasharray="7 4" />
         <text x="12" y="108" fill="#627a74" fontSize="9">2001</text>
@@ -717,8 +736,8 @@ export default function MissionTutorial() {
   return (
     <main className={`min-h-dvh ${isComplete ? 'bg-[#293453] text-[#f3f1e8]' : 'bg-[#f3f6f4] text-[#18342f]'}`}>
       <div className={`mx-auto min-h-dvh w-full max-w-[440px] px-[18px] sm:px-[21px] md:max-w-[960px] md:px-10 ${stage === 'complete' ? 'pb-10' : 'pb-[175px] md:pb-10'}`}>
-        <header className={`flex h-[91px] items-start justify-center pt-[25px] md:h-[110px] md:pt-[30px] ${isComplete ? '[&_a]:rounded-xl [&_a]:bg-[#f3f6f4] [&_a]:px-4 [&_a]:py-2' : ''}`}>
-          <SenaLogo />
+        <header className="flex h-[91px] items-start justify-center pt-[25px] md:h-[110px] md:pt-[30px]">
+          <SenaLogo imageSrc={isComplete ? '/loggg_0.png' : undefined} />
         </header>
 
         {!isComplete && !['own-verdict', 'peer-review', 'peer-result'].includes(stage) && (
@@ -863,6 +882,7 @@ export default function MissionTutorial() {
                       option={option}
                       index={index}
                       selected={risingSignal === index}
+                      selectionOutcome={risingSignal === index ? (index === 1 ? 'correct' : 'incorrect') : 'neutral'}
                       onSelect={() => setRisingSignal(index)}
                     />
                   ))}
@@ -903,7 +923,7 @@ export default function MissionTutorial() {
                           className={`flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl border text-[13px] font-semibold transition-colors ${
                             selected
                               ? verdict === 'Lead'
-                                ? 'border-2 border-[#a44f7e] bg-[#f5e8ef] text-[#8e456d]'
+                                ? 'border-2 border-[#138078] bg-[#e7f1ef] text-[#276b73]'
                                 : 'border-2 border-[#c27a1b] bg-[#f7eee2] text-[#a66a1e]'
                               : 'border-[#cbd9d6] bg-white text-[#526c66]'
                           }`}
@@ -968,9 +988,7 @@ export default function MissionTutorial() {
                           onClick={() => setRainVerdict(verdict)}
                           className={`flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl border text-[13px] font-semibold transition-colors ${
                             selected
-                              ? verdict === 'Lead'
-                                ? 'border-2 border-[#a44f7e] bg-[#f5e8ef] text-[#8e456d]'
-                                : 'border-2 border-[#c27a1b] bg-[#f7eee2] text-[#a66a1e]'
+                              ? 'border-2 border-[#138078] bg-[#e7f1ef] text-[#276b73]'
                               : 'border-[#cbd9d6] bg-white text-[#526c66]'
                           }`}
                         >
@@ -1018,11 +1036,11 @@ export default function MissionTutorial() {
                         onClick={() => setFinalAnswer(index)}
                         className={`flex min-h-[52px] w-full items-center gap-2.5 rounded-[16px] border px-3 py-2 text-left text-[12px] leading-4 transition-colors ${
                           selected
-                            ? correct ? 'border-2 border-[#a44f7e] bg-[#f5e8ef] text-[#8e456d]' : 'border-2 border-[#c27a1b] bg-[#f7eee2]'
+                            ? correct ? 'border-2 border-[#138078] bg-[#e7f1ef] text-[#276b73]' : 'border-2 border-[#c27a1b] bg-[#f7eee2]'
                             : 'border-[#cbd9d6] bg-white'
                         }`}
                       >
-                        <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md font-mono text-[10px] font-bold ${selected ? correct ? 'bg-[#a44f7e] text-white' : 'bg-[#c27a1b] text-white' : 'bg-[#edf2f0] text-[#526c66]'}`}>
+                        <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md font-mono text-[10px] font-bold ${selected ? correct ? 'bg-[#138078] text-white' : 'bg-[#c27a1b] text-white' : 'bg-[#edf2f0] text-[#526c66]'}`}>
                           {String.fromCharCode(65 + index)}
                         </span>
                         <span className="flex-1">{choice}</span>
@@ -1057,7 +1075,7 @@ export default function MissionTutorial() {
                         className={`rounded-[18px] border bg-white p-3 ${
                           answer === null
                             ? 'border-[#cbd9d6]'
-                            : isCorrect ? 'border-[#8bbcb5]' : 'border-2 border-[#a44f7e] bg-[#f7edf2]'
+                            : isCorrect ? 'border-[#8bbcb5]' : 'border-2 border-[#c27a1b] bg-[#f7eee2]'
                         }`}
                       >
                         <div className="flex items-center gap-2">
@@ -1081,7 +1099,7 @@ export default function MissionTutorial() {
                                   selected
                                     ? makesSense
                                       ? 'border-[#347f88] bg-[#e2f0ef] text-[#276b73]'
-                                      : 'border-[#a44f7e] bg-[#f5e8ef] text-[#8e456d]'
+                                      : 'border-[#c27a1b] bg-[#f7eee2] text-[#a66a1e]'
                                     : 'border-[#dce5e2] bg-white text-[#657d77]'
                                 }`}
                               >
@@ -1090,7 +1108,7 @@ export default function MissionTutorial() {
                             );
                           })}
                           {answer !== null && (
-                            <span className={`ml-auto self-center font-mono text-[9px] ${isCorrect ? 'text-[#347f88]' : 'text-[#a44f7e]'}`}>
+                            <span className={`ml-auto self-center font-mono text-[9px] ${isCorrect ? 'text-[#347f88]' : 'text-[#a66a1e]'}`}>
                               {isCorrect ? 'GOOD CATCH' : 'CHECK AGAIN'}
                             </span>
                           )}
@@ -1103,10 +1121,10 @@ export default function MissionTutorial() {
                   <p className="mt-2 text-center font-mono text-[9px] tracking-wide text-[#627a74]">REVIEW ALL FOUR REPORTS TO CONTINUE</p>
                 )}
                 {allReportsReviewed && (
-                  <p aria-live="polite" className={`mt-2 rounded-xl p-3 text-[12px] leading-[17px] ${allReviewsCorrect ? 'bg-[#e2f0ef] text-[#276b73]' : 'bg-[#f5e8ef] text-[#8e456d]'}`}>
+                  <p aria-live="polite" className={`mt-2 rounded-xl p-3 text-[12px] leading-[17px] ${allReviewsCorrect ? 'bg-[#e2f0ef] text-[#276b73]' : 'bg-[#f7eee2] text-[#a66a1e]'}`}>
                     {allReviewsCorrect
                       ? '4/4 make sense. Tomás’s report is the one that confuses correlation with cause.'
-                      : 'Look again at the reports marked in pink. Check each claim against its p-value.'}
+                      : 'Look again at the reports marked in amber. Check each claim against its p-value.'}
                   </p>
                 )}
               </>
@@ -1125,18 +1143,18 @@ export default function MissionTutorial() {
                       : 'A convincing report needs a conclusion that matches its evidence. Revisit the reports marked below and update your review.'}
                   </p>
                 </div>
-                <div className={`flex items-center gap-3 rounded-[18px] border-2 p-3 ${allReviewsCorrect ? 'border-[#a44f7e] bg-[#f5e8ef]' : 'border-[#cbd9d6] bg-white opacity-70'}`}>
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#a44f7e] text-xl text-white">◎</span>
+                <div className={`flex items-center gap-3 rounded-[18px] border-2 p-3 ${allReviewsCorrect ? 'border-[#138078] bg-[#e7f1ef]' : 'border-[#cbd9d6] bg-white opacity-70'}`}>
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#138078] text-xl text-white">◎</span>
                   <div>
-                    <p className="font-mono text-[9px] tracking-wide text-[#8e456d]">{allReviewsCorrect ? 'ACHIEVEMENT UNLOCKED' : 'ACHIEVEMENT LOCKED'}</p>
-                    <p className="font-serif text-[17px] leading-5 text-[#8e456d]">Second opinion</p>
+                    <p className="font-mono text-[9px] tracking-wide text-[#276b73]">{allReviewsCorrect ? 'ACHIEVEMENT UNLOCKED' : 'ACHIEVEMENT LOCKED'}</p>
+                    <p className="font-serif text-[17px] leading-5 text-[#276b73]">Second opinion</p>
                   </div>
                   {allReviewsCorrect && <CheckIcon />}
                 </div>
                 {!allReviewsCorrect && (
                   <div className="space-y-2">
                     {peerReports.map((report, index) => (
-                      <p key={report.name} className={`rounded-xl p-2.5 text-[11px] leading-4 ${peerReviews[index] === report.makesSense ? 'bg-[#e2f0ef] text-[#276b73]' : 'bg-[#f5e8ef] text-[#8e456d]'}`}>
+                      <p key={report.name} className={`rounded-xl p-2.5 text-[11px] leading-4 ${peerReviews[index] === report.makesSense ? 'bg-[#e2f0ef] text-[#276b73]' : 'bg-[#f7eee2] text-[#a66a1e]'}`}>
                         <strong>{report.name}:</strong>{' '}
                         {report.name === 'Tomás'
                           ? 'Does not make sense: a correlation is not proof of cause, and p = 0.46 is not significant.'
@@ -1159,7 +1177,7 @@ export default function MissionTutorial() {
                 <h1 id="constellation-title" className="mt-2 font-serif text-[32px] font-bold leading-[1.05] tracking-[-0.025em] md:text-[42px]">{stageStep.title}</h1>
                 <ValenciaConstellation rainVerdict={rainVerdict ?? 'Lead'} className="my-3" />
                 {constellationSaveError && (
-                  <p role="alert" className="rounded-xl bg-[#f5e8ef] p-3 text-[12px] text-[#8e456d]">{constellationSaveError}</p>
+                  <p role="alert" className="rounded-xl bg-[#f7eee2] p-3 text-[12px] text-[#a66a1e]">{constellationSaveError}</p>
                 )}
                 <div className="mt-2 rounded-[20px] border border-[#455272] bg-[#202b49] p-4">
                   <p className="font-mono text-[9px] tracking-[0.12em] text-[#b8d7d1]">YOUR FINDINGS</p>
@@ -1192,7 +1210,7 @@ export default function MissionTutorial() {
                     The sea temperature is a confirmed case. Your {rainVerdict ?? 'Lead'} verdict for the Poyo river basin is saved with your reasoning: “{rainReasoning}”
                   </p>
                 </div>
-                <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-[18px] border border-[#a44f7e] bg-[#f5e8ef] p-3 text-left text-[#8e456d]">
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-[18px] border border-[#138078] bg-[#e7f1ef] p-3 text-left text-[#276b73]">
                   <div>
                     <p className="font-mono text-[9px] tracking-wide">ACHIEVEMENT UNLOCKED</p>
                     <p className="font-serif text-[16px]">◎ Second opinion</p>
@@ -1202,7 +1220,7 @@ export default function MissionTutorial() {
                 <div className="mt-5">
                   <p className="font-mono text-[10px] tracking-[0.12em] text-[#b8d7d1]">NOW YOU CAN CHOOSE</p>
                   <div className="mt-2 grid gap-2 md:grid-cols-2">
-                    <Link href="/missions" className="block rounded-[20px] border border-[#718097] bg-[#34415f] p-4 text-[#f3f1e8] transition-transform hover:-translate-y-0.5">
+                    <Link href="/missions/thanks" className="block rounded-[20px] border border-[#718097] bg-[#34415f] p-4 text-[#f3f1e8] transition-transform hover:-translate-y-0.5">
                       <div className="flex items-center justify-between font-mono text-[9px] tracking-wide">
                         <span>MISSION 02</span><span className="text-[#f3c9a7]">COMING SOON</span>
                       </div>
@@ -1210,7 +1228,7 @@ export default function MissionTutorial() {
                       <p className="mt-1 text-[12px] leading-[17px] text-[#d3d9e3]">Sen will guide you again. This time, you’ll choose the zone.</p>
                       <span className="mt-3 flex h-10 items-center justify-center rounded-xl border border-white/70 bg-[#f3c9a7] font-semibold text-[#293453]">Explore missions</span>
                     </Link>
-                    <Link href="/observatory" className="flex items-center gap-3 rounded-[18px] border border-[#718097] bg-[#f3f6f4] p-3 text-[#293453] transition-transform hover:-translate-y-0.5">
+                    <Link href="/missions/thanks" className="flex items-center gap-3 rounded-[18px] border border-[#718097] bg-[#f3f6f4] p-3 text-[#293453] transition-transform hover:-translate-y-0.5">
                       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#dfedeb] text-xl text-[#138078]">⌕</span>
                       <span className="flex-1">
                         <span className="block font-serif text-[16px] font-bold leading-5">Free investigation</span>

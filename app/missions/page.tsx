@@ -51,7 +51,7 @@ export default function MissionsPage() {
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#e7f1ef] text-[#138078] md:h-10 md:w-10">
                     <WaterDropIcon />
                   </span>
-                  <p className="flex-1 font-mono text-[10px] tracking-[0.03em] text-[#c27a1b] md:text-[11px]">
+                  <p className="flex-1 font-nunito text-[10px] tracking-[0.03em] text-[#c27a1b] md:text-[11px]">
                     {tutorialComplete ? 'MISSION 00 · COMPLETE' : 'MISSION 00 · TUTORIAL'}
                   </p>
                   <span className="rounded-full bg-[#f7eee2] px-[10px] py-[5px] font-mono text-[10px] text-[#c27a1b] md:text-[11px]">

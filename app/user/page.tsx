@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useSyncExternalStore } from 'react';
 import MobileNav from '../../components/MobileNav';
@@ -99,8 +100,8 @@ export default function UserProfile() {
             className="rounded-[24px] border border-[#cbd9d6] bg-white p-5 shadow-[0_8px_24px_rgba(27,48,43,0.04)] sm:p-7"
           >
             <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
-              <div className="flex h-[82px] w-[82px] shrink-0 items-center justify-center rounded-full border-[3px] border-[#cbd9d6] bg-[#e7f1ef] text-[42px]">
-                👩‍🚀
+              <div className="relative h-[82px] w-[82px] shrink-0 overflow-hidden rounded-full border-[3px] border-[#cbd9d6] bg-[#e7f1ef]">
+                <Image src="/ber2.png" alt="Foto de perfil" fill sizes="82px" className="object-contain" />
               </div>
               <div className="min-w-0 flex-1">
                 <span className="inline-flex rounded-full bg-[#e7f1ef] px-3 py-1 font-mono text-[10px] tracking-wide text-[#138078]">
