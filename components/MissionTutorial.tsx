@@ -264,7 +264,7 @@ function ProgressHeader({ stage }: { stage: Stage }) {
 
   return (
     <div className="flex items-center justify-between gap-2 font-mono text-[10px] tracking-wide sm:text-[11px]">
-      <span className="shrink-0 text-[#12827b]">SENTINEL</span>
+      <span className="shrink-0 text-[#12827b]">SEN</span>
       <span className="text-right text-[#627a74]">{stageInfo[stage].label}</span>
       <div className="flex shrink-0 items-center gap-1" aria-label={`${activeStage + 1} de ${count}`}>
         {Array.from({ length: count }, (_, index) => (
@@ -288,10 +288,10 @@ function SentinelGuide({ message, imageSrc }: { message: ReactNode; imageSrc: st
         transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
         className="relative h-16 w-16 shrink-0 md:h-20 md:w-20"
       >
-        <Image src={imageSrc} alt="Sentinel, tu guía de misión" fill sizes="64px" className="object-contain" />
+        <Image src={imageSrc} alt="Sen, tu guía de misión" fill sizes="64px" className="object-contain" />
       </motion.div>
       <div className="min-w-0">
-        <p className="font-mono text-[9px] tracking-[0.12em] text-[#c27a1b]">SENTINEL · MISSION GUIDE</p>
+        <p className="font-mono text-[9px] tracking-[0.12em] text-[#c27a1b]">SEN · MISSION GUIDE</p>
         <p className="mt-0.5 text-[12px] leading-[17px] text-[#526c66] md:text-[14px] md:leading-5">{message}</p>
       </div>
       <div aria-hidden="true" className="relative ml-auto h-8 w-8 shrink-0 self-end">
@@ -737,7 +737,7 @@ export default function MissionTutorial() {
     <main className={`min-h-dvh ${isComplete ? 'bg-[#293453] text-[#f3f1e8]' : 'bg-[#f3f6f4] text-[#18342f]'}`}>
       <div className={`mx-auto min-h-dvh w-full max-w-[440px] px-[18px] sm:px-[21px] md:max-w-[960px] md:px-10 ${stage === 'complete' ? 'pb-10' : 'pb-[175px] md:pb-10'}`}>
         <header className="flex h-[91px] items-start justify-center pt-[25px] md:h-[110px] md:pt-[30px]">
-          <SenaLogo imageSrc={isComplete ? '/loggg_0.png' : undefined} />
+          <SenaLogo imageSrc={stage === 'constellation' ? '/loggg_011.png' : isComplete ? '/loggg_0.png' : undefined} />
         </header>
 
         {!isComplete && !['own-verdict', 'peer-review', 'peer-result'].includes(stage) && (
@@ -1256,7 +1256,7 @@ export default function MissionTutorial() {
               {(!isSetup || (stage === 'concern' && concern) || (stage === 'variable' && variable)) && <ArrowIcon />}
             </button>
             {!canContinue[stage] && (
-              <p className="mt-1 text-center font-mono text-[8px] tracking-wide text-[#627a74]">SENTINEL IS WAITING FOR YOUR CHOICE</p>
+              <p className="mt-1 text-center font-mono text-[8px] tracking-wide text-[#627a74]">SEN IS WAITING FOR YOUR CHOICE</p>
             )}
           </div>
         )}

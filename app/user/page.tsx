@@ -87,7 +87,7 @@ export default function UserProfile() {
             href="/"
             className="hidden rounded-full border border-[#cbd9d6] bg-white px-4 py-2 font-mono text-[11px] tracking-wide text-[#627a74] transition-colors hover:border-[#138078] hover:text-[#138078] md:inline-flex"
           >
-            ← BACK TO SENTINEL
+            ← BACK TO SEN
           </Link>
         </header>
 
