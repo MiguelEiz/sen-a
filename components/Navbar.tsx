@@ -1,24 +1,20 @@
 'use client';
 
 import Link from 'next/link';
+import SenaLogo from './SenaLogo';
 
 export default function Navbar() {
   return (
     <header className="w-full max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row items-center justify-between z-30 gap-4">
-      <div className="flex flex-col items-center md:items-start mx-auto md:mx-0">
-        <span className="font-extrabold text-3xl tracking-tight text-slate-900 bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
-          Sena*
-        </span>
-        <span className="text-[10px] text-slate-500 font-medium tracking-wide text-center">
-          Agencia de Detectives Espaciales
-        </span>
+      <div className="mx-auto md:mx-0">
+        <SenaLogo />
       </div>
 
       <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-700">
-        <button className="flex items-center gap-2 hover:text-blue-600 transition-colors cursor-pointer">
+        <Link href="/missions" className="flex items-center gap-2 hover:text-blue-600 transition-colors cursor-pointer">
           <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shadow-sm shadow-red-500"></span>
           Misiones
-        </button>
+        </Link>
         <button className="hover:text-blue-600 transition-colors cursor-pointer">
           Otras Investigaciones
         </button>

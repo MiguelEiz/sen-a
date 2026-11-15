@@ -11,7 +11,10 @@ export default function EarthGlobe({ showHUD = true, initialDistance = 2.5 }) {
     const [autoRotate, setAutoRotate] = useState(true);
     
     const autoRotateRef = useRef(autoRotate);
-    autoRotateRef.current = autoRotate;
+
+    useEffect(() => {
+        autoRotateRef.current = autoRotate;
+    }, [autoRotate]);
 
     useEffect(() => {
         const container = containerRef.current;
@@ -20,7 +23,7 @@ export default function EarthGlobe({ showHUD = true, initialDistance = 2.5 }) {
         // 1. Escena, Cámara y Renderizador
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-        camera.position.set(0, 0, initialDistance); 
+        camera.position.set(0, 0, initialDistance);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
@@ -35,21 +38,44 @@ export default function EarthGlobe({ showHUD = true, initialDistance = 2.5 }) {
         controls.maxDistance = 6.0;
         controls.enablePan = false;
 
-        // 3. Fondo de Estrellas
+        // 3. Fondo de estrellas circulares, lejos de la cámara y del planeta.
         const starsGeometry = new THREE.BufferGeometry();
-        const starsCount = 1200;
+        const starsCount = 1800;
         const starPositions = new Float32Array(starsCount * 3);
 
-        for (let i = 0; i < starsCount * 3; i++) {
-            starPositions[i] = (Math.random() - 0.5) * 300;
+        for (let i = 0; i < starsCount; i++) {
+            const direction = new THREE.Vector3(
+                Math.random() * 2 - 1,
+                Math.random() * 2 - 1,
+                Math.random() * 2 - 1
+            ).normalize();
+            const distance = 80 + Math.random() * 70;
+            direction.multiplyScalar(distance);
+            direction.toArray(starPositions, i * 3);
         }
         starsGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-        
+
+        const starCanvas = document.createElement('canvas');
+        starCanvas.width = 32;
+        starCanvas.height = 32;
+        const starContext = starCanvas.getContext('2d');
+        if (starContext) {
+            const gradient = starContext.createRadialGradient(16, 16, 0, 16, 16, 16);
+            gradient.addColorStop(0, 'rgba(255,255,255,1)');
+            gradient.addColorStop(0.35, 'rgba(255,255,255,0.9)');
+            gradient.addColorStop(1, 'rgba(255,255,255,0)');
+            starContext.fillStyle = gradient;
+            starContext.fillRect(0, 0, 32, 32);
+        }
+        const starTexture = new THREE.CanvasTexture(starCanvas);
         const starsMaterial = new THREE.PointsMaterial({
             color: 0xffffff,
-            size: 0.8,
+            size: 0.75,
+            map: starTexture,
             transparent: true,
-            opacity: 0.8,
+            opacity: 0.95,
+            sizeAttenuation: true,
+            depthWrite: false,
         });
         const starField = new THREE.Points(starsGeometry, starsMaterial);
         scene.add(starField);
@@ -127,7 +153,9 @@ export default function EarthGlobe({ showHUD = true, initialDistance = 2.5 }) {
         };
 
         const domElement = renderer.domElement;
-        domElement.addEventListener('pointerdown', handlePointerDown);
+        if (showHUD) {
+            domElement.addEventListener('pointerdown', handlePointerDown);
+        }
 
         // 7. Bucle de Animación
         let animationFrameId;
@@ -152,15 +180,18 @@ export default function EarthGlobe({ showHUD = true, initialDistance = 2.5 }) {
 
         return () => {
             window.removeEventListener('resize', handleResize);
-            domElement.removeEventListener('pointerdown', handlePointerDown);
+            if (showHUD) {
+                domElement.removeEventListener('pointerdown', handlePointerDown);
+            }
             cancelAnimationFrame(animationFrameId);
             if (container) container.removeChild(renderer.domElement);
             geometry.dispose();
             earthMaterial.dispose();
             starsGeometry.dispose();
             starsMaterial.dispose();
+            starTexture.dispose();
         };
-    }, [initialDistance]);
+    }, [initialDistance, showHUD]);
 
     return (
         <div className="relative w-full h-full overflow-hidden font-sans">
